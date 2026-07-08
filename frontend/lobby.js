@@ -99,15 +99,6 @@ socket.on('lobby-update', (data) => {
     }
   }
 
-  // Toggle Start Game button on the Kiosk display based on player presence
-  const startBtn = document.getElementById('open-game-btn');
-  if (startBtn) {
-    if (playersJoined.length > 0) {
-      startBtn.style.display = 'block';
-    } else {
-      startBtn.style.display = 'none';
-    }
-  }
 });
 
 // Configures dynamic player headcount (1 or 2 player mode)
@@ -146,10 +137,3 @@ function openGameWindow() {
   window.open(`/game?room=${roomId}`, '_blank');
 }
 
-// Emits start game request directly from Kiosk display touchscreen click
-function clickStartGame() {
-  if (roomId && socket.connected) {
-    console.log("Start Game clicked on Kiosk touchscreen. Emitting request...");
-    socket.emit('start-game-request', { roomId });
-  }
-}

@@ -459,8 +459,8 @@
         desktopModes.style.display = 'none';
         mobileJoin.style.display = 'flex';
       } else {
-        desktopModes.style.display = 'flex';
-        mobileJoin.style.display = 'none';
+        // Auto-host single-player game immediately on host device
+        startLobby(1);
       }
     });
 

@@ -14,8 +14,8 @@ if (urlRoom) {
   window.history.pushState({ path: newUrl }, '', newUrl);
 }
 
-const FRONTEND_URL = "https://frontend-five-tau-87.vercel.app";
-const BACKEND_URL = "https://fruit-ninja-backend-production.up.railway.app";
+const FRONTEND_URL = window.location.origin;
+const BACKEND_URL = "https://fruit-ninja-kiosk-production.up.railway.app";
 
 // Connect to Socket.IO
 socket = io(BACKEND_URL, { transports: ['websocket'] });

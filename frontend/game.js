@@ -365,7 +365,7 @@ const urlRoom = urlParams.get('room');
 
 // Initialize Socket.IO Client
 function initSocketConnection() {
-  const BACKEND_URL = "https://fruit-ninja-backend-production.up.railway.app";
+  const BACKEND_URL = "https://fruit-ninja-kiosk-production.up.railway.app";
   socket = io(BACKEND_URL, { transports: ['websocket'] });
 
   // Use URL room parameter or empty string for auto-coupling

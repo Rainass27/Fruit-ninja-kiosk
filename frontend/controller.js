@@ -7,7 +7,7 @@ if (roomId) {
   if (roomCodeTag) roomCodeTag.innerText = roomId.toUpperCase();
 }
 
-const BACKEND_URL = "https://fruit-ninja-backend-production.up.railway.app";
+const BACKEND_URL = "https://fruit-ninja-kiosk-production.up.railway.app";
 const socket = io(BACKEND_URL, { transports: ['websocket'] });
 
 // UI Screen Elements

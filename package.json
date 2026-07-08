@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node server.js",
     "start:desktop": "electron .",
-    "build:desktop": "electron-builder --win"
+    "build:desktop": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:all": "electron-builder --win --mac"
   },
   "dependencies": {
     "express": "^4.19.2",

@@ -436,35 +436,14 @@
   </div>
 
   <script>
-    // Helper to detect mobile browser
-    function isMobileDevice() {
-      if (navigator.userAgent.includes('Electron')) {
-        return false; // Electron is always the host/display screen
-      }
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
-    }
-
     // Parse Room ID from URL parameters
     const params = new URLSearchParams(window.location.search);
     const roomParam = params.get('room');
 
-    // Auto-redirect mobile browsers if room parameter is present in URL
-    if (roomParam && isMobileDevice()) {
-      window.location.href = `/controller?room=${roomParam.toUpperCase()}`;
-    }
-
     // Configure layout based on device type
     window.addEventListener('DOMContentLoaded', () => {
-      const desktopModes = document.getElementById('desktop-modes');
-      const mobileJoin = document.getElementById('mobile-join');
-      
-      if (isMobileDevice()) {
-        desktopModes.style.display = 'none';
-        mobileJoin.style.display = 'flex';
-      } else {
-        // Auto-host single-player game immediately on host device
-        startLobby(1);
-      }
+      // Auto-host single-player game immediately on host device
+      startLobby(1);
     });
 
     // Start lobby session from desktop host

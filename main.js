@@ -35,7 +35,7 @@ function createWindow() {
   });
 
   // Load the hosted production Vercel application directly
-  mainWindow.loadURL('https://frontend-five-tau-87.vercel.app');
+  mainWindow.loadURL('https://fruit-ninja-kiosk.vercel.app');
 
   if (shouldMaximize) {
     mainWindow.maximize();

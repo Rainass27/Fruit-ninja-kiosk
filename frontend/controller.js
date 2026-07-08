@@ -524,7 +524,23 @@ function calibrateSword() {
 
 // Disconnect from the current room and return to the scan/join screen
 function leaveSession() {
-  window.location.href = window.location.pathname;
+  if (roomId && socket.connected && myName && mySlot) {
+    // Notify the server that we are returning to the lobby (which resets the room and display)
+    socket.emit('play-again-request', { roomId });
+    // Switch the UI screen back to the lobby-screen directly instead of reloading!
+    const readyBtn = document.getElementById('btn-ready');
+    if (readyBtn) {
+      readyBtn.disabled = false;
+      readyBtn.innerText = "Start Game";
+    }
+    const lobbyStatus = document.getElementById('lobby-status-text');
+    if (lobbyStatus) {
+      lobbyStatus.innerText = `Welcome, ${myName}! You are Player ${mySlot}. Waiting for game start...`;
+    }
+    showScreen('lobby-screen');
+  } else {
+    window.location.href = window.location.pathname;
+  }
 }
 
 // Auto-enable sensors on page load for non-iOS devices (Android/PC)

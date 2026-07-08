@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neon Ninja - Interactive Motion Game</title>
+  <!-- Google Fonts for premium typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <!-- Socket.IO client library -->
+  <script src="/socket.io/socket.io.js"></script>
+  <!-- QRCode.js Library loaded locally -->
+  <script src="/qrcode.min.js"></script>
+  
+  <style>
+    :root {
+      --bg-color: #08080c;
+      --primary-neon: #00f2fe; /* Cyan */
+      --secondary-neon: #4facfe; /* Blue */
+      --accent-neon: #ff007f; /* Neon pink */
+      --success-neon: #39ff14; /* Neon green */
+      --warning-neon: #ffb703; /* Yellow */
+      --glass-bg: rgba(16, 16, 24, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f8f9fa;
+      --text-muted: #8e9297;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    html, body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Outfit', sans-serif;
+      overflow: hidden !important;
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Hide scrollbar globally for Chrome, Safari and Opera */
+    ::-webkit-scrollbar {
+      display: none !important;
+    }
+
+    /* Cyber-grid background */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(0, 242, 254, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 242, 254, 0.02) 1px, transparent 1px);
+      background-size: 45px 45px;
+      background-position: center center;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Glassmorphism overlays */
+    .overlay {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      overflow-y: auto;
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+      padding: 40px 15px;
+    }
+
+    .overlay::-webkit-scrollbar {
+      display: none; /* Hide scrollbar for Chrome, Safari and Opera */
+    }
+
+    .modal {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 40px;
+      width: 90%;
+      max-width: 750px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 
+                  0 0 40px rgba(0, 242, 254, 0.15);
+      text-align: center;
+      position: relative;
+      margin: auto;
+    }
+
+    .modal::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(135deg, var(--primary-neon), var(--accent-neon));
+      border-radius: 26px;
+      z-index: -1;
+      opacity: 0.2;
+    }
+
+    h1.title {
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #fff 30%, var(--primary-neon) 70%, var(--accent-neon));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      text-shadow: 0 0 30px rgba(0, 242, 254, 0.2);
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      font-weight: 300;
+    }
+
+    .setup-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    @media (max-width: 600px) {
+      .setup-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .qr-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .qr-placeholder {
+      width: 180px;
+      height: 180px;
+      background: white;
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+
+    .qr-text {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      word-break: break-all;
+    }
+
+    .ip-address {
+      font-family: monospace;
+      color: var(--primary-neon);
+      background: rgba(0, 242, 254, 0.08);
+      padding: 4px 8px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-top: 5px;
+    }
+
+    .info-section {
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .step-box {
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-neon), var(--secondary-neon));
+      color: #000;
+      font-weight: 800;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+    }
+
+    .step-desc h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--text-main);
+    }
+
+    .step-desc p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Game Mode Options */
+    .mode-select {
+      display: flex;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .mode-btn {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .mode-btn span.mode-desc {
+      font-size: 0.75rem;
+      font-weight: 400;
+      opacity: 0.8;
+    }
+
+    .mode-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-main);
+    }
+
+    .mode-btn.active {
+      background: rgba(0, 242, 254, 0.08);
+      border-color: var(--primary-neon);
+      color: var(--primary-neon);
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+    }
+
+    .connection-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-top: 10px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--accent-neon);
+      box-shadow: 0 0 10px var(--accent-neon);
+      animation: pulse 1.5s infinite alternate;
+    }
+
+    .status-dot.connected {
+      background-color: var(--success-neon);
+      box-shadow: 0 0 10px var(--success-neon);
+    }
+
+    @keyframes pulse {
+      from { opacity: 0.4; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1.1); }
+    }
+
+    .start-game-btn {
+      margin-top: 20px;
+      background: linear-gradient(135deg, var(--primary-neon), var(--secondary-neon));
+      border: none;
+      border-radius: 12px;
+      padding: 14px 40px;
+      color: #000;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 242, 254, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .start-game-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 242, 254, 0.6);
+    }
+
+    .start-game-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* Portrait / Kiosk Responsiveness */
+    @media (max-aspect-ratio: 1/1) {
+      .setup-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+        margin-bottom: 20px !important;
+      }
+      .modal {
+        width: 95% !important;
+        max-width: 480px !important;
+        padding: 25px 20px !important;
+        border-radius: 16px !important;
+      }
+      h1.title {
+        font-size: 2.5rem !important;
+      }
+      p.subtitle {
+        margin-bottom: 20px !important;
+        font-size: 1rem !important;
+      }
+      .qr-placeholder {
+        width: 160px !important;
+        height: 160px !important;
+      }
+      .qr-placeholder canvas, .qr-placeholder img {
+        width: 140px !important;
+        height: 140px !important;
+      }
+      .info-section {
+        gap: 15px !important;
+      }
+      .step-desc h3 {
+        font-size: 1rem !important;
+      }
+      .step-desc p {
+        font-size: 0.85rem !important;
+      }
+      .start-game-btn {
+        padding: 12px 25px !important;
+        font-size: 1rem !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Pairing / Menu Screen -->
+  <div id="pairing-overlay" class="overlay">
+    <div class="modal">
+      <h1 class="title">Neon Ninja</h1>
+      <p class="subtitle">WiFi Motion-Controlled Sword Slicing Game</p>
+
+      <div class="setup-grid">
+        <!-- Step 1: Scan and Connect -->
+        <div class="qr-section">
+          <div class="qr-placeholder" id="qr-code">
+            <!-- QR code generated here -->
+          </div>
+          <div class="qr-text">
+            Connect phone to local WiFi, scan QR or go to:<br>
+            <span class="ip-address" id="connect-link">Finding server IP...</span>
+          </div>
+        </div>
+
+        <!-- Step 2: Instructions and Modes -->
+        <div class="info-section">
+          <div class="step-box">
+            <span class="step-num">1</span>
+            <div class="step-desc">
+              <h3>Connect Your Phone</h3>
+              <p>Scan the QR code. Point your phone at this screen, tap <strong>Activate</strong>, and hold your phone vertically like a sword handle.</p>
+            </div>
+          </div>
+
+          <div class="step-box" style="display: none;">
+            <span class="step-num">2</span>
+            <div class="step-desc">
+              <h3>Configure Players</h3>
+              <div class="mode-select">
+                <button class="mode-btn active" id="mode-1player" onclick="setPlayerCount(1)">
+                  1 Player
+                  <span class="mode-desc">Single Sword</span>
+                </button>
+                <button class="mode-btn" id="mode-2player" onclick="setPlayerCount(2)">
+                  2 Players
+                  <span class="mode-desc">Split-Screen Duel</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-box">
+            <span class="step-num">2</span>
+            <div class="step-desc">
+              <h3>Swing to Slash!</h3>
+              <p>Wait for game start. Move phone vertically/horizontally. A neon sword slash will cut fruits. <strong>Or swipe directly on this touch screen to slice!</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="connection-status" id="connection-status-box" style="flex-direction: column; gap: 8px; width: 100%; border-radius: 16px; padding: 15px; align-items: stretch; text-align: left;">
+        <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 4px;">
+          <span class="status-dot" id="connection-status-dot"></span>
+          <span id="connection-status-text">Waiting for players to connect...</span>
+        </div>
+        <div id="player-lobby-list" style="display: flex; flex-direction: column; gap: 6px;">
+          <div style="color: var(--text-muted); font-size: 0.9rem;">No players joined yet.</div>
+        </div>
+        <div id="lobby-queue-info" style="font-size: 0.8rem; color: var(--accent-neon); margin-top: 4px; display: none;">
+          Queue: <span id="queue-count-val">0</span> in waiting room
+        </div>
+      </div>
+
+      <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+        <button id="open-game-btn" class="start-game-btn" onclick="openGameWindow()">Open Game Screen</button>
+        <div style="margin-top: 5px; border-top: 1px solid var(--glass-border); padding-top: 15px;">
+          <a href="/download" style="color: var(--primary-neon); text-decoration: none; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;" target="_blank">
+            📥 Download Windows Desktop App (.exe)
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lobby pairing logic -->
+  <script src="/lobby.js"></script>
+</body>
+</html>

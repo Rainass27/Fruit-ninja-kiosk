@@ -1,0 +1,17 @@
+{
+  "name": "Neon Ninja",
+  "short_name": "Neon Ninja",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "background_color": "#08080c",
+  "theme_color": "#00f2fe",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "https://img.icons8.com/nolan/512/katana.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

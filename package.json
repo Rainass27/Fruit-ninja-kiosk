@@ -1,0 +1,29 @@
+{
+  "name": "wifi-fruit-ninja",
+  "version": "1.0.0",
+  "description": "Multiplayer-style interactive Fruit Ninja using local WiFi and WebSockets",
+  "main": "main.js",
+  "scripts": {
+    "start": "node server.js",
+    "start:desktop": "electron .",
+    "build:desktop": "electron-builder --win"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "localtunnel": "^2.0.2",
+    "selfsigned": "^5.5.0",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "electron": "^42.5.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.pixadoo.wifi-fruit-ninja",
+    "productName": "Neon Ninja",
+    "asar": true,
+    "win": {
+      "target": "portable"
+    }
+  }
+}

@@ -568,7 +568,13 @@ function showMenu() {
     clearInterval(timerInterval);
     timerInterval = null;
   }
-  window.location.href = `/?room=${roomId}`;
+  if (typeof socket !== 'undefined' && socket.connected) {
+    socket.emit('reset-room-session', { roomId });
+  }
+  // Wait a brief moment for socket emission before redirecting
+  setTimeout(() => {
+    window.location.href = `/?room=${roomId}`;
+  }, 100);
 }
 
 // Spawn Logic

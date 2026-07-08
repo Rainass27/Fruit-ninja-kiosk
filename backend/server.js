@@ -223,6 +223,18 @@ io.on('connection', (socket) => {
     }
   });
 
+  // Handle room session reset when host display goes back to home
+  socket.on('reset-room-session', (data) => {
+    const { roomId } = data;
+    if (roomId && rooms[roomId]) {
+      console.log(`Resetting room ${roomId} and forcing logout of all controllers`);
+      io.to(roomId).emit('force-logout');
+      rooms[roomId].players = [];
+      rooms[roomId].queue = [];
+      rooms[roomId].gameActive = false;
+    }
+  });
+
   socket.on('disconnecting', () => {
     for (const roomId of socket.rooms) {
       if (roomId !== socket.id && rooms[roomId]) {

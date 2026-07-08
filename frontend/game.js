@@ -587,7 +587,13 @@ function pauseGame() {
 
 // Return to the main landing page and close the current session
 function showMenu() {
-  window.location.href = `/?room=${roomId}`;
+  if (typeof socket !== 'undefined' && socket.connected) {
+    socket.emit('reset-room-session', { roomId });
+  }
+  // Wait a brief moment for socket emission before redirecting
+  setTimeout(() => {
+    window.location.href = `/?room=${roomId}`;
+  }, 100);
 }
 
 // Spawn Logic

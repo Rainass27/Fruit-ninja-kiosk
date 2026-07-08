@@ -277,6 +277,16 @@ socket.on('play-again-sync', () => {
   }
 });
 
+// Force log out and reset when host goes back to home
+socket.on('force-logout', () => {
+  console.log("Room session was reset by host display. Logging out...");
+  // Clear any local state
+  myName = "";
+  mySlot = null;
+  // Reload the controller to the permission activation screen
+  window.location.href = window.location.pathname;
+});
+
 // Receive slice vibration feedback from laptop
 socket.on('vibrate', (data) => {
   if (navigator.vibrate) {

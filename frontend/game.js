@@ -1033,8 +1033,8 @@ function drawSword() {
   let prevSwordY = swordY1;
   
   
-  swordX1 = lerp(swordX1, targetX1, 0.58);
-  swordY1 = lerp(swordY1, targetY1, 0.58);
+  swordX1 = lerp(swordX1, targetX1, 0.22);
+  swordY1 = lerp(swordY1, targetY1, 0.22);
 
   let d1 = dist(swordX1, swordY1, prevSwordX, prevSwordY);
   if (d1 > 1.5) {
@@ -1052,8 +1052,8 @@ function drawSword() {
     let prevSwordX2_val = swordX2;
     let prevSwordY2_val = swordY2;
     
-    swordX2 = lerp(swordX2, targetX2, 0.58);
-    swordY2 = lerp(swordY2, targetY2, 0.58);
+    swordX2 = lerp(swordX2, targetX2, 0.22);
+    swordY2 = lerp(swordY2, targetY2, 0.22);
 
     let d2 = dist(swordX2, swordY2, prevSwordX2_val, prevSwordY2_val);
     if (d2 > 1.5) {

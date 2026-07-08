@@ -20,7 +20,7 @@
   },
   "build": {
     "appId": "com.pixadoo.wifi-fruit-ninja",
-    "productName": "Neon Ninja",
+    "productName": "Neon Ninja Kiosk",
     "asar": true,
     "win": {
       "target": "portable"

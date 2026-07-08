@@ -31,7 +31,7 @@ function createWindow() {
     },
     // Start with menu bar hidden
     autoHideMenuBar: true,
-    title: "Neon Ninja"
+    title: "Neon Ninja Kiosk"
   });
 
   // Load the hosted production Vercel application directly

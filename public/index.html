@@ -34,25 +34,16 @@
       user-select: none;
     }
 
-    html, body {
+    body {
       background-color: var(--bg-color);
       color: var(--text-main);
       font-family: 'Outfit', sans-serif;
-      overflow: hidden !important;
+      overflow: hidden;
       width: 100vw;
       height: 100vh;
-      margin: 0;
-      padding: 0;
-      -ms-overflow-style: none;  /* IE and Edge */
-      scrollbar-width: none;  /* Firefox */
       display: flex;
       justify-content: center;
       align-items: center;
-    }
-
-    /* Hide scrollbar globally for Chrome, Safari and Opera */
-    ::-webkit-scrollbar {
-      display: none !important;
     }
 
     /* Cyber-grid background */
@@ -81,13 +72,7 @@
       align-items: center;
       z-index: 10;
       overflow-y: auto;
-      -ms-overflow-style: none;  /* IE and Edge */
-      scrollbar-width: none;  /* Firefox */
       padding: 40px 15px;
-    }
-
-    .overlay::-webkit-scrollbar {
-      display: none; /* Hide scrollbar for Chrome, Safari and Opera */
     }
 
     .modal {
@@ -330,49 +315,6 @@
     .start-game-btn:active {
       transform: translateY(1px);
     }
-
-    /* Portrait / Kiosk Responsiveness */
-    @media (max-aspect-ratio: 1/1) {
-      .setup-grid {
-        grid-template-columns: 1fr !important;
-        gap: 20px !important;
-        margin-bottom: 20px !important;
-      }
-      .modal {
-        width: 95% !important;
-        max-width: 480px !important;
-        padding: 25px 20px !important;
-        border-radius: 16px !important;
-      }
-      h1.title {
-        font-size: 2.5rem !important;
-      }
-      p.subtitle {
-        margin-bottom: 20px !important;
-        font-size: 1rem !important;
-      }
-      .qr-placeholder {
-        width: 160px !important;
-        height: 160px !important;
-      }
-      .qr-placeholder canvas, .qr-placeholder img {
-        width: 140px !important;
-        height: 140px !important;
-      }
-      .info-section {
-        gap: 15px !important;
-      }
-      .step-desc h3 {
-        font-size: 1rem !important;
-      }
-      .step-desc p {
-        font-size: 0.85rem !important;
-      }
-      .start-game-btn {
-        padding: 12px 25px !important;
-        font-size: 1rem !important;
-      }
-    }
   </style>
 </head>
 <body>
@@ -401,11 +343,11 @@
             <span class="step-num">1</span>
             <div class="step-desc">
               <h3>Connect Your Phone</h3>
-              <p>Scan the QR code. Point your phone at this screen, tap <strong>Activate</strong>, and hold your phone vertically like a sword handle.</p>
+              <p>Scan the QR code. Point your phone at the laptop screen, tap <strong>Activate</strong>, and hold your phone vertically like a sword handle.</p>
             </div>
           </div>
 
-          <div class="step-box" style="display: none;">
+          <div class="step-box">
             <span class="step-num">2</span>
             <div class="step-desc">
               <h3>Configure Players</h3>
@@ -423,10 +365,10 @@
           </div>
 
           <div class="step-box">
-            <span class="step-num">2</span>
+            <span class="step-num">3</span>
             <div class="step-desc">
               <h3>Swing to Slash!</h3>
-              <p>Wait for game start. Move phone vertically/horizontally. A neon sword slash will cut fruits. <strong>Or swipe directly on this touch screen to slice!</strong></p>
+              <p>Wait for game start. Move phone vertically/horizontally. A neon sword slash will appear, cutting fruits in its path.</p>
             </div>
           </div>
         </div>
@@ -445,13 +387,8 @@
         </div>
       </div>
 
-      <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="margin-top: 15px;">
         <button id="open-game-btn" class="start-game-btn" onclick="openGameWindow()">Open Game Screen</button>
-        <div style="margin-top: 5px; border-top: 1px solid var(--glass-border); padding-top: 15px;">
-          <a href="/download" style="color: var(--primary-neon); text-decoration: none; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;" target="_blank">
-            📥 Download Windows Desktop App (.exe)
-          </a>
-        </div>
       </div>
     </div>
   </div>

@@ -38,25 +38,16 @@
       user-select: none;
     }
 
-    html, body {
+    body {
       background-color: var(--bg-color);
       color: var(--text-main);
       font-family: 'Outfit', sans-serif;
-      overflow: hidden !important;
+      overflow: hidden;
       width: 100vw;
       height: 100vh;
-      margin: 0;
-      padding: 0;
-      -ms-overflow-style: none;  /* IE and Edge */
-      scrollbar-width: none;  /* Firefox */
       display: flex;
       justify-content: center;
       align-items: center;
-    }
-
-    /* Hide scrollbar globally for Chrome, Safari and Opera */
-    ::-webkit-scrollbar {
-      display: none !important;
     }
 
     /* Cyber-grid background */
@@ -85,13 +76,7 @@
       align-items: center;
       z-index: 10;
       overflow-y: auto;
-      -ms-overflow-style: none;  /* IE and Edge */
-      scrollbar-width: none;  /* Firefox */
       padding: 40px 15px;
-    }
-
-    .overlay::-webkit-scrollbar {
-      display: none; /* Hide scrollbar for Chrome, Safari and Opera */
     }
 
     .modal {
@@ -334,49 +319,6 @@
     .start-game-btn:active {
       transform: translateY(1px);
     }
-
-    /* Portrait / Kiosk Responsiveness */
-    @media (max-aspect-ratio: 1/1) {
-      .setup-grid {
-        grid-template-columns: 1fr !important;
-        gap: 20px !important;
-        margin-bottom: 20px !important;
-      }
-      .modal {
-        width: 95% !important;
-        max-width: 480px !important;
-        padding: 25px 20px !important;
-        border-radius: 16px !important;
-      }
-      h1.title {
-        font-size: 2.5rem !important;
-      }
-      p.subtitle {
-        margin-bottom: 20px !important;
-        font-size: 1rem !important;
-      }
-      .qr-placeholder {
-        width: 160px !important;
-        height: 160px !important;
-      }
-      .qr-placeholder canvas, .qr-placeholder img {
-        width: 140px !important;
-        height: 140px !important;
-      }
-      .info-section {
-        gap: 15px !important;
-      }
-      .step-desc h3 {
-        font-size: 1rem !important;
-      }
-      .step-desc p {
-        font-size: 0.85rem !important;
-      }
-      .start-game-btn {
-        padding: 12px 25px !important;
-        font-size: 1rem !important;
-      }
-    }
   </style>
 </head>
 <body>
@@ -444,11 +386,11 @@
             <span class="step-num">1</span>
             <div class="step-desc">
               <h3>Connect Your Phone</h3>
-              <p>Scan the QR code or go to the URL. Tap <strong>Activate</strong> and hold your phone vertically like a sword handle pointing at this screen.</p>
+              <p>Scan the QR code or go to the URL. Tap <strong>Activate</strong> and hold your phone vertically like a sword handle.</p>
             </div>
           </div>
 
-          <!-- Configure Players Mode Selection (hidden) -->
+          <!-- Configure Players Mode Selection (hidden, selected on landing page) -->
           <div class="step-box" id="step-configure-players" style="display: none;">
             <span class="step-num">2</span>
             <div class="step-desc">
@@ -468,7 +410,7 @@
             <span class="step-num">2</span>
             <div class="step-desc">
               <h3>Swing to Slash!</h3>
-              <p>Wait for game start. Move phone vertically/horizontally. A neon sword slash will cut fruits. <strong>Or swipe directly on this touch screen to slice!</strong></p>
+              <p>Wait for game start. Move phone vertically/horizontally. A neon sword slash will appear, cutting fruits in its path.</p>
             </div>
           </div>
         </div>
@@ -487,13 +429,8 @@
         </div>
       </div>
 
-      <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
-        <button id="open-game-btn" class="start-game-btn" onclick="openGameWindow()" style="display: none;">Open Game Screen</button>
-        <div style="margin-top: 5px; border-top: 1px solid var(--glass-border); padding-top: 15px;">
-          <a href="/download" style="color: var(--primary-neon); text-decoration: none; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;" target="_blank">
-            📥 Download Windows Desktop App (.exe)
-          </a>
-        </div>
+      <div style="margin-top: 15px; display: none;">
+        <button id="open-game-btn" class="start-game-btn" onclick="openGameWindow()">Open Game Screen</button>
       </div>
     </div>
   </div>
@@ -522,8 +459,8 @@
         desktopModes.style.display = 'none';
         mobileJoin.style.display = 'flex';
       } else {
-        // Auto-host single-player game immediately on host device
-        startLobby(1);
+        desktopModes.style.display = 'flex';
+        mobileJoin.style.display = 'none';
       }
     });
 
